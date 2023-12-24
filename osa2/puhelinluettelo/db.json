@@ -1,0 +1,19 @@
+{
+  "persons": [
+    {
+      "name": "Dan Abramov",
+      "number": "12-43-234345",
+      "id": 3
+    },
+    {
+      "name": "Pallo",
+      "number": "987654321",
+      "id": 5
+    },
+    {
+      "name": "Aika pimee",
+      "number": "987654321",
+      "id": 6
+    }
+  ]
+}
