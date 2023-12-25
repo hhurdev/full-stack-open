@@ -1,8 +1,10 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import AddPersonForm from './components/AddPersonForm'
 import Numbers from './components/Numbers'
 import phonebookService from './services/phonebook'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -10,6 +12,11 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [notification, setNotificationMessage] = useState(
+    {
+      message: '',
+      type: ''
+    })
 
   useEffect(() => {
     phonebookService
@@ -18,7 +25,7 @@ const App = () => {
         setPersons(people)
       })
       .catch(error => {
-        console.log('Problem with retrieving notes');
+        showNotification({ message: 'Problem with retrieving notes', type: 'error'});
       })
   }, [])
   
@@ -31,6 +38,13 @@ const App = () => {
     return match !== undefined
   }
 
+  const showNotification = ({ message, type}) => {
+    setNotificationMessage({ message, type})
+    setTimeout(() => {
+      setNotificationMessage({ message: '', type: ''})
+    }, 5000)
+  }
+
   const updatePersonData = (newPerson) => {
     if (window.confirm(`${newName} is already added to the phonebook. Replace the old number with a new one?`)){
       const id = persons.find(person => person.name === newName).id
@@ -40,6 +54,11 @@ const App = () => {
         setPersons(persons.map(person => person.id !== id ? person : returnedPerson))
         setNewName('')
         setNewNumber('')
+        showNotification({
+          message: `Replaced number for ${returnedPerson.name}`,
+          type: 'notification'})
+      }).catch(error => {
+        showNotification({ message: `The person has most likely been deleted.`, type: 'error'})
       })
     }
   }
@@ -76,8 +95,9 @@ const App = () => {
         setPersons(persons.concat(person))
         setNewName('')
         setNewNumber('')
+        showNotification({ message: `Added ${person.name}`, type: 'notification'} )
     }).catch(error => {
-      console.log('Problem with creating new person');
+      showNotification({ message: `An error occurred with adding the person.`, type: 'error'} )
     })
   }
 
@@ -103,6 +123,7 @@ const App = () => {
   return (
     <>
       <h2>Phonebook</h2>
+      <Notification message={notification.message} type={notification.type}/>
       <Filter handleFilterChange={handleFilterChange}/>
       <AddPersonForm addPerson={addPerson} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange}/>
       <Numbers filteredPeople={filteredPeople} remove={removePerson}/>
