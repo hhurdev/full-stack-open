@@ -1,11 +1,13 @@
 require('dotenv').config()
 
 const PORT = process.env.PORT
-const MONGO_URL = process.env.MONGO_URI
 const MONGO_PASSWORD = process.env.MONGO_PASSWORD
+const MONGO_URI = process.env.NODE_ENV === 'test'
+  ? process.env.TEST_MONGO_URI
+  : process.env.MONGO_URI
 
 module.exports = {
-  MONGO_URL,
+  MONGO_URI,
   MONGO_PASSWORD,
   PORT
 }

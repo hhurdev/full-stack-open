@@ -5,12 +5,12 @@ const blogsRouter = require('./controllers/blogController')
 const logger = require('./utils/logger')
 const errorHandler = require('./utils/middleware').errorHandler
 const unknownEndpoint = require('./utils/middleware').unknownEndpoint
-const { MONGO_URL, MONGO_PASSWORD } = require('./utils/config')
+const { MONGO_URI, MONGO_PASSWORD } = require('./utils/config')
 
-const mongoUrl = MONGO_URL.replace('<password>', MONGO_PASSWORD)
+const mongoURI = MONGO_URI.replace('<password>', MONGO_PASSWORD)
 const mongoose = require('mongoose')
 
-mongoose.connect(mongoUrl)
+mongoose.connect(mongoURI)
   .then(() => {
     logger.info('connected to the database')
   }).catch(() => { logger.info('problem with connecting to db')})
