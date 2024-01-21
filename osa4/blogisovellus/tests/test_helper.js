@@ -1,4 +1,6 @@
 const Blog = require('../models/blogs')
+const User = require('../models/user')
+const bcrypt = require('bcrypt')
 
 const initialBlogs = [
   {
@@ -39,17 +41,6 @@ const initialBlogs = [
   }
 ]
 
-const listWithOneBlog = [
-  {
-    _id: '5a422aa71b54a676234d17f8',
-    title: 'Go To Statement Considered Harmful',
-    author: 'Edsger W. Dijkstra',
-    url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-    likes: 5,
-    __v: 0
-  }
-]
-
 const oneNewBlog = {
   title: 'Uuden blogin lisäys',
   author: 'Bloggaaja',
@@ -57,22 +48,78 @@ const oneNewBlog = {
   likes: 2,
 }
 
+const initialUsers = [
+  {
+    username: 'root',
+    password: 'papukaija',
+    name: 'Superuser'
+  },
+  {
+    username: 'Oakley',
+    password: 'machinery',
+    name: 'Hevonen'
+  }
+]
+
 const blogsInDb = async () => {
   const allBlogs = await Blog.find({})
   return allBlogs.map(blog => blog.toJSON)
 }
 
-const initializeBlogs = async () => {
+const usersInDb = async () => {
+  const allUsers = await User.find({})
+  return allUsers.map(user => user.toJSON())
+}
+
+const initializeBlogs = async (users) => {
   await Blog.deleteMany({})
-  const blogObjects = initialBlogs.map(blog => new Blog(blog))
+
+  let userIndex = 0
+  const blogObjects = initialBlogs.map(blog => {
+    const user = users[userIndex]
+    userIndex = (userIndex + 1) % users.length  // Cycle through users
+    const newBlog = new Blog({ ...blog, user: user._id })
+    user.blogs = user.blogs.concat(newBlog._id)  // Add the blog to the user's blogs
+    return newBlog
+  })
+
   await Promise.all(blogObjects.map(blog => blog.save()))
 }
 
+const initializeUsers = async () => {
+  await User.deleteMany({})
+
+  //salasana sama kaikille
+  const userPromises = initialUsers.map(async user => {
+    const passwordHash = await bcrypt.hash('sekret', 10)
+    return new User({ username: user.username, passwordHash, name: user.name })
+  })
+
+  const userModels = await Promise.all(userPromises)
+
+  await Promise.all(userModels.map(user => user.save()))
+  return userModels
+}
+
+const initializeDatabase = async () => {
+  const users = await initializeUsers()
+  await initializeBlogs(users)
+  await Promise.all(users.map(user => user.save()))
+}
+
+const getToken = async (api, user) => {
+  const loginResponse = await api
+    .post('/api/login')
+    .send(user)
+
+  return loginResponse.body.token
+}
 
 module.exports = {
   initialBlogs,
-  listWithOneBlog,
   blogsInDb,
   oneNewBlog,
-  initializeBlogs
+  usersInDb,
+  initializeDatabase,
+  getToken
 }
