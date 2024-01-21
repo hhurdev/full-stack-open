@@ -1,13 +1,53 @@
 GET http://localhost:3003/api/blogs/
 
 ###
+// GET ALL USERS
+GET http://localhost:3003/api/users
 
+###
+
+// ------------------------------
+// BLOG STUFF
+
+// CREATE NEW BLOG
 POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtvbG1vbmVuIiwiaWQiOiI2NWFjMjUxMzZiNzE5MWNkYzU5ZmE4ODIiLCJpYXQiOjE3MDU4NTM5MDUsImV4cCI6MTcwNTg1NzUwNX0.Ga0KrDDgCCrwO5OisUSXzZR9AfkiIKkGz9ua_w_pdAQ
+
+{
+  "title": "hannan blogi",
+  "author": "kolmonen",
+  "url": "http://example.com",
+  "likes": 12
+}
+
+###
+
+// DELETE A BLOG
+DELETE http://localhost:3003/api/blogs/65ad43e64f644ef7baa7f95e
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtvbG1vbmVuIiwiaWQiOiI2NWFjMjUxMzZiNzE5MWNkYzU5ZmE4ODIiLCJpYXQiOjE3MDU4NTM5MDUsImV4cCI6MTcwNTg1NzUwNX0.Ga0KrDDgCCrwO5OisUSXzZR9AfkiIKkGz9ua_w_pdAQ
+
+// ------------------------------
+// USER STUFF
+
+###
+//CREATE A USER
+POST http://localhost:3003/api/users
 Content-Type: application/json
 
 {
-  "title": "Example Title",
-  "author": "Example Author",
-  "url": "http://example.com",
-  "likes": 0
+  "username": "nelonen",
+  "name": "Hanna",
+  "password": "salainen"
+}
+
+###
+//LOGIN
+POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+  "username": "kolmonen",
+  "password": "salainen"
 }

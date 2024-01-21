@@ -5,9 +5,11 @@ const MONGO_PASSWORD = process.env.MONGO_PASSWORD
 const MONGO_URI = process.env.NODE_ENV === 'test'
   ? process.env.TEST_MONGO_URI
   : process.env.MONGO_URI
+const SECRET = process.env.SECRET
 
 module.exports = {
   MONGO_URI,
   MONGO_PASSWORD,
-  PORT
+  PORT,
+  SECRET
 }
