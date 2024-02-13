@@ -25,3 +25,10 @@ dist-ssr
 
 # Environment variables
 .env
+
+routes
+
+# Cypress
+cypress/videos/
+cypress/screenshots/
+cypress/logs/
