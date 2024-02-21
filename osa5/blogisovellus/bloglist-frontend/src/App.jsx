@@ -90,7 +90,6 @@ const App = () => {
   // BLOG HANDLING STUFF
   // ------------------------------
 
-  // used when adding likes to a post
   const updateBlogLikes = async (updatedBlog) => {
     try {
       await blogService.updateBlog(updatedBlog)

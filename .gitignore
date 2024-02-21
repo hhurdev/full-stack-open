@@ -32,3 +32,5 @@ routes
 cypress/videos/
 cypress/screenshots/
 cypress/logs/
+
+muistiinpanot.js
