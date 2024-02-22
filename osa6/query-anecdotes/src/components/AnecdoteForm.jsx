@@ -2,10 +2,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { createAnecdote } from "../services/anecdotes"
 import NotificationContext from "../contexts/NotificationContext"
 import { useContext } from 'react'
+import { useNotify } from '../contexts/NotificationContext'
 
 const AnecdoteForm = () => {
   const queryClient = useQueryClient()
-  const [notification, dispatch] = useContext(NotificationContext)
+  const notifyWith = useNotify()
 
   /**
    * Voi myös
@@ -20,19 +21,13 @@ const AnecdoteForm = () => {
       // jätän äänestämisen vanhaan muotoon, niin muistaa miten tehdään
       const anecdotes = queryClient.getQueryData(['anecdotes'])
       queryClient.setQueryData(['anecdotes'], anecdotes.concat(newAnecdote))
-      dispatch({ type: 'SET_NOTIFICATION', data: `A new anecdote "${newAnecdote.content}" created!` })
-      setTimeout(() => {
-        dispatch({ type: 'CLEAR_NOTIFICATION' })
-      }, 5000)
+      notifyWith(`A new anecdote "${newAnecdote.content}" created!`)
     },
     onError: (error) => {
-        const errorMessage = error.response.data.error
-        if (errorMessage === 'too short anecdote, must have length 5 or more'){
-          dispatch({ type: 'SET_NOTIFICATION', data: `The anecdote is too short. It must have a length of 5 characters or more.` })
-          setTimeout(() => {
-            dispatch({ type: 'CLEAR_NOTIFICATION' })
-          }, 5000)
-        }
+      const errorMessage = error.response.data.error
+      if (errorMessage === 'too short anecdote, must have length 5 or more'){
+        notifyWith(`The anecdote is too short. Use a minimum of five characters.`)
+      }
     }
   })
 

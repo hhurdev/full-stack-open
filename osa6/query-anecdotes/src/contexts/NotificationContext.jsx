@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { createContext, useReducer } from 'react';
+import { createContext, useReducer, useContext } from 'react';
 
 const notificationReducer = (state, action) => {
   switch (action.type) {
@@ -27,6 +27,26 @@ export const NotificationContextProvider = (props) => {
       {props.children}
     </NotificationContext.Provider>
   )
+}
+
+export const useNotificationValue = () => {
+  const [notification] = useContext(NotificationContext)
+  return notification
+}
+
+// a custom hook that encapsulates the logic of setting and clearing the notification
+// when called, returns a function that sets the notification and clears it after 5 seconds
+// then stored in a variable notifyWith
+export const useNotify = () => {
+  console.log('use notify')
+  const valueAndDispatch = useContext(NotificationContext)
+  const dispatch = valueAndDispatch[1]
+  return (data) => {
+    dispatch({ type: 'SET_NOTIFICATION', data })
+    setTimeout(() => {
+      dispatch({ type: 'CLEAR_NOTIFICATION' })
+    }, 5000)
+  } 
 }
 
 export default NotificationContext

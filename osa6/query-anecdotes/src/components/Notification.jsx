@@ -1,8 +1,9 @@
-import { useContext } from 'react'
 import NotificationContext from '../contexts/NotificationContext'
+import { useNotificationValue } from '../contexts/NotificationContext'
 
 const Notification = () => {
-  const [notification, dispatch] = useContext(NotificationContext)
+  // otetaan vain se arvo, joka on tarpeen
+  const notification = useNotificationValue()
 
   const style = {
     marginBottom: 5,
